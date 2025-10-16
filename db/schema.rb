@@ -18,20 +18,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_133013) do
     t.string "firstname"
     t.string "lastname"
     t.integer "age"
-    t.integer "gender"
+    t.integer "gender", default: 0
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
     t.string "username"
-    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_users_on_user_id"
   end
 
-  add_foreign_key "users", "users"
+  add_foreign_key "profiles", "users"
 end
