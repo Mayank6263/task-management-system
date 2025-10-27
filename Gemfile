@@ -70,4 +70,10 @@ gem "bcrypt", "~> 3.1"
 
 gem "active_model_serializers", "~> 0.10.15"
 
+<<<<<<< HEAD
 gem "devise", "~> 4.9"
+=======
+gem 'devise'
+gem 'devise-jwt'
+gem 'jsonapi-serializer'
+>>>>>>> Tms-01 Devise + token based done
