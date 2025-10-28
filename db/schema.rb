@@ -10,15 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema[8.0].define(version: 2025_10_18_180229) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_28_114321) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
-=======
-ActiveRecord::Schema[8.0].define(version: 2025_10_27_124608) do
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_catalog.plpgsql"
+  create_table "comments", force: :cascade do |t|
+    t.string "body"
+    t.string "commentable_type", null: false
+    t.bigint "commentable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
+  end
 
   create_table "posts", force: :cascade do |t|
     t.string "image"
@@ -29,7 +32,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_124608) do
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
->>>>>>> Tms-01 Devise + token based done
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -38,11 +40,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_124608) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-<<<<<<< HEAD
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-  end
-=======
     t.string "name"
     t.string "jti", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -51,5 +48,4 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_124608) do
   end
 
   add_foreign_key "posts", "users"
->>>>>>> Tms-01 Devise + token based done
 end

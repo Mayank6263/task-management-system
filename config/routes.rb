@@ -1,15 +1,5 @@
 Rails.application.routes.draw do
-<<<<<<< HEAD
-  devise_for :users
-  # devise_for :users
-  get "home/index"
-  namespace :api do
-    namespace :v1 do
-      resources :users
-      resources :sessions
-    end
-  end
-=======
+
   
     devise_for :users, defaults: { format: :json }, path: '', path_names: {
     sign_in: 'login',
@@ -21,7 +11,15 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
-  resources :posts
+  resources :posts do 
+    resources :comments
+  end
+
+  resources :comments do 
+    resources :comments
+  end
+
+  # resources :posts
   # devise_for :users
   # get "home/index"
   # namespace :api do
@@ -30,7 +28,6 @@ Rails.application.routes.draw do
   #     resources :sessions
   #   end
   # end
->>>>>>> Tms-01 Devise + token based done
       # root 'home#index'
   
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
