@@ -1,12 +1,13 @@
-# frozen_string_literal: true
-
 class Users::SessionsController < Devise::SessionsController
+  skip_before_action :authenticate_user
   include RackSessionsFix
   respond_to :json
 
   private
+
   def respond_with(current_user, _opts = {})
     token = request.env['warden-jwt_auth.token']
+
     render json: {
       status: { 
         code: 200, message: 'Logged in successfully.',

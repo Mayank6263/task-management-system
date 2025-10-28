@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
-  protect_from_forgery prepend: true
+  # skip_before_filter :verify_authenticity_token#, :if => Proc.new { |c| c.request.format == 'application/json' }  
 
   respond_to :json
   private
