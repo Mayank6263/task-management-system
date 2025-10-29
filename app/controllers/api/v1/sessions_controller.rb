@@ -1,27 +1,62 @@
-class Api::V1::SessionsController < ApplicationController
-  # skip_before_action :authenticate_user, only: [:create], :raise => false
-  skip_before_action :verify_authenticity_token
+class Api::V1::SessionsController < Devise::SessionsController
+  skip_before_action :authenticate_user
+  include RackSessionsFix
+  respond_to :json
 
-  # Login (Generate JWT)
-  def create
-    user = User.find_by(email: params[:email])
-    # if user&.authenticate(params[:password])
-    if user && user.authenticate(params[:password])
-      token = JsonWebToken.encode(user_id: user.id)
-      render json: { message: "Logged In Successfully",user: user, token: token }, status: :ok
+  private
+
+  def respond_with(current_user, _opts = {})
+    token = request.env['warden-jwt_auth.token']
+
+    render json: {
+      status: { 
+        code: 200, message: 'Logged in successfully.',
+        data: { user: UserSerializer.new(current_user).serializable_hash[:data][:attributes] }
+      },
+      token: token
+    }, status: :ok
+  end
+
+  def respond_to_on_destroy
+    if request.headers['Authorization'].present?
+      jwt_payload = JWT.decode(request.headers['Authorization'].split(' ').last, Rails.application.credentials.devise_jwt_secret_key!).first
+      current_user = User.find(jwt_payload['sub'])
+    end
+    
+    if current_user
+      render json: {
+        status: 200,
+        message: 'Logged out successfully.'
+      }, status: :ok
     else
-      render json: { error: "Invalid credentials" }, status: :unauthorized
+      render json: {
+        status: 401,
+        message: "Couldn't find an active session."
+      }, status: :unauthorized
     end
   end
 
-  # Logout
-  def destroy
-    render json: { message: "User Logged Out Successfully." }, status: :ok 
-  end
+  # before_action :configure_sign_in_params, only: [:create]
 
-  # private
+  # GET /resource/sign_in
+  # def new
+  #   super
+  # end
 
-  # def user_params
-  #   params.require(:user).permit(:email, :password)
+  # POST /resource/sign_in
+  # def create
+  #   super
+  # end
+
+  # DELETE /resource/sign_out
+  # def destroy
+  #   super
+  # end
+
+  # protected
+
+  # If you have extra params to permit, append them to the sanitizer.
+  # def configure_sign_in_params
+  #   devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
   # end
 end

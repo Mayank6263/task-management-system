@@ -3,7 +3,7 @@ class PostsController < ApplicationController
 
   def index
     posts = @current_user.posts.order(:updated_at)
-    render json: { status: 200, posts: posts}, status: :ok
+    render json: { data: { posts: posts } }, status: :ok
   end
 
   def create

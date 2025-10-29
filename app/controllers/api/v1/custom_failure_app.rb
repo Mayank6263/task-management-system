@@ -1,4 +1,4 @@
-class Users::CustomFailureApp < Devise::FailureApp
+class Api::V1::CustomFailureApp < Devise::FailureApp
   # debugger
 
   def respond

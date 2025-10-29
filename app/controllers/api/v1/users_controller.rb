@@ -55,14 +55,8 @@ class Api::V1::UsersController < ApplicationController
   #     render json: { message: "User not found." }, status: :not_found
   # end
 
-<<<<<<< HEAD
-  # # def all_exception
-  #   render json: { message: "Undefined Error" }, status: 500
-  # end
-=======
   # # # def all_exception
   # #   render json: { message: "Undefined Error" }, status: 500
   # # end
->>>>>>> Tms-01 Devise + token based done
 
 end

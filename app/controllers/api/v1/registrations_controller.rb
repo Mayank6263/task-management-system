@@ -1,9 +1,6 @@
-# frozen_string_literal: true
-
-class Users::RegistrationsController < Devise::RegistrationsController
-  # skip_before_filter :verify_authenticity_token#, :if => Proc.new { |c| c.request.format == 'application/json' }  
-
+class Api::V1::RegistrationsController < Devise::RegistrationsController
   respond_to :json
+
   private
 
   def respond_with(current_user, _opts = {})
