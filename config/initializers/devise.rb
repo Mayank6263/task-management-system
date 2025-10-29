@@ -313,7 +313,7 @@ Devise.setup do |config|
 
   config.navigational_formats = []
   config.warden do |manager|
-    manager.failure_app = Users::CustomFailureApp
+    manager.failure_app = Api::V1::CustomFailureApp
   end
 
   config.jwt do |jwt|
