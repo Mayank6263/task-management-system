@@ -74,3 +74,7 @@ gem "active_model_serializers", "~> 0.10.15"
 gem 'devise'
 gem 'devise-jwt'
 gem 'jsonapi-serializer'
+
+gem "fast_jsonapi", "~> 1.5"
+
+gem "will_paginate", "~> 4.0"

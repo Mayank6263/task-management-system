@@ -22,3 +22,11 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+
+			30/10/25
+	resolved issue of authenticate user for each post.
+	applied search functionailty
+	search functionility on post#index action/api.
+	used fastjson srializer .
+	used will_paginate gem for pagination per_page or per record.

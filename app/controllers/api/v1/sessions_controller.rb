@@ -1,62 +1,48 @@
 class Api::V1::SessionsController < Devise::SessionsController
-  skip_before_action :authenticate_user
-  include RackSessionsFix
-  respond_to :json
+  before_action :sign_in_params, only: :create
+  before_action :load_user, only: [:create, ]
+  skip_before_action :authenticate_user, only: :create
+
+
+  def create
+    # debugger
+    if @user&.valid_password?(sign_in_params[:password])
+      token = JwtService.encode(user_id: @user.id)
+      sign_in("user", @user)
+      message = { message: "Signed In Successfully.", token: token }
+      render json: UserSerializer.new(@user, meta: message).serializable_hash
+    end
+  end
+
+  def destroy
+    if verify_signed_out_user
+      request.headers['token'] = ""
+      render json: { messages: "Signed Out Successfully." }
+    end
+  end
+
+
+  # def search
+  #   debugger
+  #   @posts = User.search(params[:image])
+  #   render json: @users, status: :ok 
+  # end
 
   private
 
-  def respond_with(current_user, _opts = {})
-    token = request.env['warden-jwt_auth.token']
-
-    render json: {
-      status: { 
-        code: 200, message: 'Logged in successfully.',
-        data: { user: UserSerializer.new(current_user).serializable_hash[:data][:attributes] }
-      },
-      token: token
-    }, status: :ok
+  def sign_in_params
+    params.require(:sign_in).permit(:email, :password)
   end
 
-  def respond_to_on_destroy
-    if request.headers['Authorization'].present?
-      jwt_payload = JWT.decode(request.headers['Authorization'].split(' ').last, Rails.application.credentials.devise_jwt_secret_key!).first
-      current_user = User.find(jwt_payload['sub'])
-    end
-    
-    if current_user
+  def load_user
+    @user = User.find_for_database_authentication(email: sign_in_params[:email])
+    unless @user
       render json: {
-        status: 200,
-        message: 'Logged out successfully.'
-      }, status: :ok
-    else
-      render json: {
-        status: 401,
-        message: "Couldn't find an active session."
-      }, status: :unauthorized
+        messages: "Cannot find user",
+        is_success: false,
+        data: {}
+      }, status: :not_found
     end
   end
-
-  # before_action :configure_sign_in_params, only: [:create]
-
-  # GET /resource/sign_in
-  # def new
-  #   super
-  # end
-
-  # POST /resource/sign_in
-  # def create
-  #   super
-  # end
-
-  # DELETE /resource/sign_out
-  # def destroy
-  #   super
-  # end
-
-  # protected
-
-  # If you have extra params to permit, append them to the sanitizer.
-  # def configure_sign_in_params
-  #   devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
-  # end
 end
+

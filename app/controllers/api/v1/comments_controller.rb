@@ -1,17 +1,12 @@
-class CommentsController < ApplicationController
-  before_action :authenticate_user
+class Api::V1::CommentsController < ApplicationController
   before_action :set_comment, only: %i[show update destroy]
 
-
-
   def index
+    debugger
     render json: { status: 200, comments: @post.comments}, status: :ok
   end
 
   def create
-    # comment = @post.comments.new(comment_params)
-    # comment.user_id = @current_user.id
-
     comment = @current_user.comments.new(comment_params)
 
     if comment.save!
@@ -45,10 +40,10 @@ class CommentsController < ApplicationController
   private
 
   def set_comment
-    @comment = @post.comments.find(params[:id])
+    @post = @current_user.posts.find(params[:id])
   end
 
   def comment_params
-    params.require(:comment).permit(:body, :commentable_id, :commentable_type)
+    params.require(:comment).permit(:body)
   end
 end
