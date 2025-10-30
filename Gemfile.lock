@@ -115,7 +115,6 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-
     devise-jwt (0.12.1)
       devise (~> 4.0)
       warden-jwt_auth (~> 0.10)
@@ -136,6 +135,8 @@ GEM
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
+    fast_jsonapi (1.5)
+      activesupport (>= 4.2)
     fugit (1.11.2)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
@@ -375,6 +376,7 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    will_paginate (4.0.1)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.7.3)
@@ -389,10 +391,10 @@ DEPENDENCIES
   brakeman
   capybara
   debug
-
   devise
   devise-jwt
   dotenv (~> 3.1)
+  fast_jsonapi (~> 1.5)
   importmap-rails
   jbuilder
   jsonapi-serializer
@@ -412,6 +414,7 @@ DEPENDENCIES
   turbo-rails
   tzinfo-data
   web-console
+  will_paginate (~> 4.0)
 
 BUNDLED WITH
    2.4.1

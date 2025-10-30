@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::Base
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
   protect_from_forgery with: :null_session, if: -> { request.format.json? }
   skip_before_action :verify_authenticity_token
@@ -8,7 +7,7 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordInvalid, with: :validation_failed
 
   before_action :authenticate_user
-  before_action :configure_permitted_parameters, if: :devise_controller?
+  # before_action :configure_permitted_parameters, if: :devise_controller?
 
   private
 
@@ -26,19 +25,34 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user
-    debugger
+    # debugger
+    # token = JwtService.encode(user_id: @user.id)
     if request.headers['token'].present?
-      id = JWT.decode(request.headers[:token], Rails.application.credentials.devise_jwt_secret_key!).first['sub']
+      id = JwtService.decode(request.headers[:token])["user_id"]
       @current_user = User.find(id)
     else
       render json: { message: "Invalid token", code: 401 }
     end
   end
 
+  def page
+  end
+
+  def per_page
+  end
+  
+  def next_page
+  end
+    
+  end
+
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: %i[name email])
+    debugger
+    # devise_parameter_sanitizer.permit(:user, keys: %i[name email])
+    devise_parameter_sanitizer.permit(:user, keys: %i[name email password])
+
     devise_parameter_sanitizer.permit(:account_update, keys: %i[name email])
   end
 end
