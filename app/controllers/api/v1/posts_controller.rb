@@ -1,28 +1,21 @@
 class Api::V1::PostsController < ApplicationController
   before_action :set_post, only: %i[show update destroy]
+  # before_action :load_pagination, only: :index
+  before_action :search, only: :search
 
   def index
-    # debugger
-    posts = Post.all
-    posts = posts.where(['caption LIKE ?', "#{params[:search]}"]) if params[:search].present?
-    posts = posts.paginate(page: params[:page].to_i, per_page: params[:per_page])
-
-    # ( params[:caption] == Post.where(['caption ILIKE ?', "#{params[:caption]}"]) )?
-    #   @posts =  Post.where(['caption LIKE ?', "#{params[:caption]}"])
-    # :
-    #   @posts = Post.paginate(page: params[:page], per_page: params[:per_page])
-  
-    # render json: PostSerializer.new(posts), status: :ok
-    render json: PostSerializer.new(posts, meta: { total_pages: posts.total_pages, current_page: posts.page[:page], total_entries: posts.total_entries })
-
+    @posts = Post.all.paginate(page: params[:page], per_page: params[:per_page])
+    pages = { total_pages: @posts.total_pages, current_page: params[:page].to_i, total_entries: @posts.total_entries }
+    render json: PostSerializer.new(@posts, meta: pages)
   end
 
   def create
     post = @current_user.posts.new(post_params)
     if post.save!
-      render json: PostSerializer.new(post,  meta: { message: "Post created successfully!" }), status: :ok
+      message = { message: "Post created successfully!", status: :ok }
+      render json: PostSerializer.new(post,  meta: message)
     else
-      render json: { status: 422, message: 'Post creation failed.' }, status: :unprocessable_entity
+      render json: { message: "Post creation failed.", status: :unprocessable_entity }
     end
   end
 
@@ -31,27 +24,31 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def update
-    # debugger
     if @post.update(post_params)
-      render json: PostSerializer.new(@post, meta: { message: "Post Updated successfully!" }), status: :ok
+      message = { message: "Post Updated successfully!", status: :ok }
+      render json: PostSerializer.new(@post, meta: message)
     else
-      render json: { status: 422, message: 'Updation failed.' }, status: :unprocessable_entity
+      render json: { status: unprocessable_entity, message: "Updation failed." }
     end
   end
 
   def destroy
     if @post.destroy
-      render json: {status: 200, message: 'Post deleted successfully.'}, status: :ok
-    else
-      render json: {status: 422, message: 'Post deletion failed.'}, status: :unprocessable_entity
+      render json: { status: :ok, message: "Post deleted successfully." }
     end
   end
 
-  # def search
-  #   debugger
-  #   search_post = return Post.all unless search == Post.where(['image LIKE ?', "%#{search}%"])
-  #   render json: { users: search_post }, status: :ok
-  # end
+  def myposts
+    @posts = @current_user.posts
+    render json: { Myposts:@posts, meta: { Count: @posts.count }}
+  end
+
+  def search
+    # debugger
+    @posts = Post.where("user_id = '#{params[:search].to_i}'").order(updated_at: :desc)
+    @posts = @posts.paginate(page: params[:page], per_page: params[:per_page])
+    render json: PostSerializer.new(@posts, meta: { total_pages: @posts.total_pages, current_page: params[:page].to_i, total_entries: @posts.total_entries })
+  end
 
   private
 
