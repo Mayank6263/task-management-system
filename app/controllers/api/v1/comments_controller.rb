@@ -1,49 +1,59 @@
 class Api::V1::CommentsController < ApplicationController
-  before_action :set_comment, only: %i[show update destroy]
+  before_action :get_post
+  before_action :find_comment, except: %i[index create postcomments]
 
   def index
-    debugger
-    render json: { status: 200, comments: @post.comments}, status: :ok
+    render json: CommentSerializer.new(@post.comments)
   end
 
   def create
-    comment = @current_user.comments.new(comment_params)
+    comment = @post.comments.new(comment_params)
 
     if comment.save!
-      render json: { status: 200, message: 'comment created successfully.', comment: comment }, status: :ok
+      message = { message: "Comment created successfully!", status: :ok }
+      render json: CommentSerializer.new(comment,  meta: message)
     else
-      render json: { status: 422, message: "Error in creating comment.", comment: comment }, status: :unprocessable_entity
+      render json: { message: "Error in creating comment.", status: :unprocessable_entity }
     end
   end
 
   def show
-    render json: { status: 200, comment: @comment }, status: :ok
+    render json: CommentSerializer.new(@comment,  meta: { status: :ok })
   end
 
   def update
-    debugger
     if @comment.update(comment_params)
-      render json: { status: 200, message: 'Comment updated successfully.', comment: @comment }, status: :ok
+      message = { message: "Comment updated successfully.", status: :ok }
+      render json: CommentSerializer.new(@comment,  meta: message)
     else
-      render json: { status: 422, message: 'Updation failed.' }, status: :unprocessable_entity
+      render json: { message: "Updation failed.", status: :unprocessable_entity }
     end
   end
 
   def destroy
     if @comment.destroy
-      render json: {status: 200, message: 'Comment deleted successfully.'}, status: :ok
+      render json: { message: "Comment deleted successfully.", status: :ok }
     else
-      render json: {status: 422, message: 'Comment deletion failed.'}, status: :unprocessable_entity
+      render json: { message: "Comment deletion failed.", status: :unprocessable_entity }
     end
+  end
+
+  def postcomments
+    debugger
   end
 
   private
 
-  def set_comment
-    @post = @current_user.posts.find(params[:id])
+  def find_comment
+    @comment = @post.comments.find(params[:id])
+  end
+
+  def get_post
+    @post = Post.find(params[:post_id]) if params[:post_id]
+    @post = Comment.find(params[:comment_id]) if params[:comment_id]
   end
 
   def comment_params
-    params.require(:comment).permit(:body)
+    params.require(:comment).permit(:body, :user_id)
   end
 end

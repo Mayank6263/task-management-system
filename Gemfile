@@ -71,9 +71,9 @@ gem "bcrypt", "~> 3.1"
 gem "active_model_serializers", "~> 0.10.15"
 
 
-gem 'devise'
-gem 'devise-jwt'
-gem 'jsonapi-serializer'
+gem "devise"
+gem "devise-jwt"
+gem "jsonapi-serializer"
 
 gem "fast_jsonapi", "~> 1.5"
 

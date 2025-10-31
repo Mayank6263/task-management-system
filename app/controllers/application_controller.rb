@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  allow_browser versions: :modern
+   allow_browser versions: :modern
   protect_from_forgery with: :null_session, if: -> { request.format.json? }
   skip_before_action :verify_authenticity_token
   rescue_from JWT::ExpiredSignature, with: :handle_expired_session
@@ -7,7 +7,18 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordInvalid, with: :validation_failed
 
   before_action :authenticate_user
-  # before_action :configure_permitted_parameters, if: :devise_controller?
+  # before_action :load_pagination, only: :index
+
+
+  # def load_pagination
+  #   # debugger
+  #   @model = controller_name.classify.constantize.all
+  #   @model = @model.paginate(page: params[:page], per_page: params[:per_page])
+  #   # @model << page.to_i
+  # end
+
+  # def search
+  # end
 
   private
 
@@ -20,14 +31,11 @@ class ApplicationController < ActionController::Base
   end
 
   def validation_failed(exception)
-    # debugger
-    render json: {error: exception.message}, status: :unprocessable_entity
+    render json: { error: exception.message }, status: :unprocessable_entity
   end
 
   def authenticate_user
-    # debugger
-    # token = JwtService.encode(user_id: @user.id)
-    if request.headers['token'].present?
+    if request.headers["token"].present?
       id = JwtService.decode(request.headers[:token])["user_id"]
       @current_user = User.find(id)
     else
@@ -35,24 +43,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def page
-  end
-
-  def per_page
-  end
-  
-  def next_page
-  end
-    
-  end
 
   protected
 
   def configure_permitted_parameters
-    debugger
-    # devise_parameter_sanitizer.permit(:user, keys: %i[name email])
     devise_parameter_sanitizer.permit(:user, keys: %i[name email password])
-
     devise_parameter_sanitizer.permit(:account_update, keys: %i[name email])
   end
 end
