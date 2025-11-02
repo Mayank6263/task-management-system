@@ -1,5 +1,5 @@
 class Api::V1::PostsController < ApplicationController
-  before_action :set_post, only: %i[show update destroy]
+  before_action :set_post, only: %i[ update destroy]
   # before_action :load_pagination, only: :index
   before_action :search, only: :search
 
@@ -20,7 +20,7 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def show
-    render json: PostSerializer.new(@post), status: :ok
+    render json: PostSerializer.new(Post.find(params[:id])), status: :ok
   end
 
   def update
