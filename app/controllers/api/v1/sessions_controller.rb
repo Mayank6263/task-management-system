@@ -2,9 +2,10 @@ class Api::V1::SessionsController < Devise::SessionsController
   before_action :sign_in_params, only: :create
   before_action :load_user, only: [ :create ]
   skip_before_action :authenticate_user, only: :create
-
+  skip_before_action :verify_signed_out_user, only: :destroy
 
   def create
+    # debugger
     if @user&.valid_password?(sign_in_params[:password])
       token = JwtService.encode(user_id: @user.id)
       sign_in("user", @user)
@@ -13,10 +14,19 @@ class Api::V1::SessionsController < Devise::SessionsController
     end
   end
 
+  def show
+  end
+
+  def update
+  end
+
   def destroy
-    if verify_signed_out_user
-      request.headers["token"] = ""
-      render json: { messages: "Signed Out Successfully.", status: :ok }
+    # debugger
+    if @current_user
+      @current_user.update_column(:jti, SecureRandom.uuid)
+      render json: { message: "Signed Out Successfully" }, status: :ok
+    else
+      render json: { message: "Invalid or expired token" }, status: :unauthorized
     end
   end
 
