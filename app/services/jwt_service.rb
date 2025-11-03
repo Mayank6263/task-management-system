@@ -3,7 +3,7 @@ class JwtService
   SECRET_KEY = Rails.application.secret_key_base.to_s
 
   # Encode a payload into a JWT
-  def self.encode(payload, exp = 1.hour.from_now)
+  def self.encode(payload, exp = 1.year.from_now)
     user = User.find_by(id: payload[:user_id])
     payload[:jti] = user.jti if user
     payload[:exp] = exp.to_i
