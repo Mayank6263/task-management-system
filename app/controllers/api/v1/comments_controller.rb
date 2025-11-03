@@ -3,10 +3,12 @@ class Api::V1::CommentsController < ApplicationController
   before_action :find_comment, except: %i[index create postcomments]
 
   def index
+    debugger
     render json: CommentSerializer.new(@post.comments)
   end
 
   def create
+    debugger
     comment = @post.comments.new(comment_params)
 
     if comment.save!
@@ -49,6 +51,7 @@ class Api::V1::CommentsController < ApplicationController
   end
 
   def get_post
+    
     @post = Post.find(params[:post_id]) if params[:post_id]
     @post = Comment.find(params[:comment_id]) if params[:comment_id]
   end

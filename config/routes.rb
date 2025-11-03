@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
+      get "likes/index"
       devise_for :users, defaults: { format: :json }, path: "devise", path_names: {
         sign_in: "login",
         sign_out: "logout",
@@ -17,7 +18,7 @@ Rails.application.routes.draw do
       get "posts/search", to: "posts#search"
       get "posts/myposts", to: "posts#myposts"
       get "comments/postcomments", to: "comments#postcomments"
-
+      put "posts/likes/unlike", to: "likes#unlike"
 
 
       resources :posts do
@@ -26,6 +27,7 @@ Rails.application.routes.draw do
       end
 
       resources :comments do
+        resources :likes
         resources :comments
       end
     end
