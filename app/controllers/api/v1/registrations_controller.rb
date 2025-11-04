@@ -2,12 +2,13 @@ class Api::V1::RegistrationsController < Devise::RegistrationsController
   skip_before_action :authenticate_user
 
   def create
+    # debugger
     @user = User.new user_params
 
     if @user.save!
       token = JwtService.encode(user_id: @user.id)
       message = { messages: "Sign Up Successfully", status: :ok, token: token }
-      render json: UserSerializer.new( @user, meta: message )
+      render json: UserSerializer.new(@user, meta: message)
     else
       render json: { messages: "Sign Up Failed", status: :unprocessable_entity }
     end
