@@ -63,4 +63,4 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:user, keys: %i[name email password])
     devise_parameter_sanitizer.permit(:account_update, keys: %i[name email])
     end
-  end
+end

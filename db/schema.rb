@@ -10,20 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_03_141826) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_04_180613) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
 
   create_table "comments", force: :cascade do |t|
     t.string "body"
-    t.bigint "user_id", null: false
     t.string "commentable_type", null: false
-    t.bigint "commentable_id", null: false
+    t.uuid "commentable_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "comments_count", default: 0
-    t.integer "likes_count", default: 0
+    t.bigint "user_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.uuid "user_uuid"
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
@@ -35,6 +35,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_141826) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.uuid "user_uuid"
     t.index ["likeable_type", "likeable_id"], name: "index_likes_on_likeable"
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
@@ -47,6 +49,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_141826) do
     t.datetime "updated_at", null: false
     t.integer "comments_count", default: 0
     t.integer "likes_count", default: 0
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.uuid "user_uuid"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
@@ -60,11 +64,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_141826) do
     t.datetime "updated_at", null: false
     t.string "name"
     t.string "jti", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "comments", "users"
   add_foreign_key "likes", "users"
   add_foreign_key "posts", "users"
 end

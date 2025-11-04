@@ -3,6 +3,7 @@ class Api::V1::PostsController < ApplicationController
   before_action :search, only: :search
 
   def index
+    # debugger
     @posts = Post.all.paginate(page: params[:page], per_page: params[:per_page])
     pages = { total_pages: @posts.total_pages, current_page: params[:page].to_i, total_entries: @posts.total_entries }
     render json: PostSerializer.new(@posts, meta: pages)
@@ -42,11 +43,12 @@ class Api::V1::PostsController < ApplicationController
     if @posts.empty?
       render json: { message: "You do not have Posts yet." }
     else
-      render json: { Myposts:@posts, meta: { Count: @posts.count }}
+      render json: { Myposts: @posts, meta: { Count: @posts.count } }
     end
   end
 
   def search
+    debugger
     @posts = Post.where("user_id = '#{params[:search].to_i}'").order(updated_at: :desc)
     @posts = @posts.paginate(page: params[:page], per_page: params[:per_page])
     render json: PostSerializer.new(@posts, meta: { total_pages: @posts.total_pages, current_page: params[:page].to_i, total_entries: @posts.total_entries })
