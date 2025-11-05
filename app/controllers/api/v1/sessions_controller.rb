@@ -7,7 +7,7 @@ class Api::V1::SessionsController < Devise::SessionsController
   def create
     # debugger
     if @user&.valid_password?(sign_in_params[:password])
-      token = JwtService.encode(user_id: @user.id)
+      token = JwtService.encode(user_uuid: @user.id)
       sign_in("user", @user)
       message = { message: "Signed In Successfully.", token: token }
       render json: UserSerializer.new(@user, meta: message)

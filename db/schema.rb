@@ -10,51 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_04_180613) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_05_112533) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
 
-  create_table "comments", force: :cascade do |t|
+  create_table "comments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "body"
     t.string "commentable_type", null: false
-    t.uuid "commentable_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.uuid "user_uuid"
-    t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
-    t.index ["user_id"], name: "index_comments_on_user_id"
+    t.uuid "commentable_uuid", default: -> { "gen_random_uuid()" }
+    t.index ["commentable_uuid", "commentable_type"], name: "index_comments_on_commentable_uuid_and_commentable_type", unique: true
   end
 
-  create_table "likes", force: :cascade do |t|
+  create_table "likes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "liked", default: false
     t.string "likeable_type", null: false
-    t.bigint "likeable_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.uuid "user_uuid"
-    t.index ["likeable_type", "likeable_id"], name: "index_likes_on_likeable"
-    t.index ["user_id"], name: "index_likes_on_user_id"
+    t.uuid "likeable_uuid"
   end
 
-  create_table "posts", force: :cascade do |t|
+  create_table "posts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "image"
     t.string "caption"
-    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "comments_count", default: 0
     t.integer "likes_count", default: 0
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.uuid "user_uuid"
-    t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -64,13 +54,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_04_180613) do
     t.datetime "updated_at", null: false
     t.string "name"
     t.string "jti", null: false
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "comments", "users"
-  add_foreign_key "likes", "users"
-  add_foreign_key "posts", "users"
+  add_foreign_key "comments", "users", column: "user_uuid", name: "comments_user_uuid_fkey"
+  add_foreign_key "likes", "users", column: "user_uuid", name: "likes_user_uuid_fkey"
+  add_foreign_key "posts", "users", column: "user_uuid", name: "posts_user_uuid_fkey"
 end

@@ -36,7 +36,6 @@ class ApplicationController < ActionController::Base
 
   def authenticate_user
     token = request.headers["token"]
-
     if token.present?
       decoded = JwtService.decode(token)
 
@@ -44,8 +43,8 @@ class ApplicationController < ActionController::Base
         render json: { message: "Invalid or expired token" }, status: :unauthorized and return
       end
 
-      id = decoded["user_id"]
-      @current_user = User.find_by(id: id)
+      uuid = decoded["user_uuid"]
+      @current_user = User.find_by(uuid: uuid)
 
       unless @current_user
         render json: { message: "Invalid user" }, status: :unauthorized and return

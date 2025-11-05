@@ -3,7 +3,6 @@ class Api::V1::PostsController < ApplicationController
   before_action :search, only: :search
 
   def index
-    # debugger
     @posts = Post.all.paginate(page: params[:page], per_page: params[:per_page])
     pages = { total_pages: @posts.total_pages, current_page: params[:page].to_i, total_entries: @posts.total_entries }
     render json: PostSerializer.new(@posts, meta: pages)
