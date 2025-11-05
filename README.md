@@ -24,8 +24,13 @@ Things you may want to cover:
 * ...
 
 
-			31/10/25
+			05/11/25
 	
+	1. removed all conflict of migrations.
+	2. added proper migrations of uuid .
+	3. resolved issue with uuid in existing databsaee.
+	4. make uuid primary key 
+	all other foreign key i.e user_id => user_uuid.
 	
 	
 	
