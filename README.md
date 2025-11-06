@@ -25,12 +25,12 @@ Things you may want to cover:
 
 
 			05/11/25
-	
-	1. removed all conflict of migrations.
-	2. added proper migrations of uuid .
-	3. resolved issue with uuid in existing databsaee.
-	4. make uuid primary key 
-	all other foreign key i.e user_id => user_uuid.
+	installed mysql.
+	maintained sheet daily status sheet of cleint.
+	installed all setup related platforms like for elastic search java is used .
+	installed mongodb, nodejs, redis.
+	Took a dump of hownow_internal_development.sql file received from abdul.
+	resolved all issue related to installation.
 	
 	
 	
