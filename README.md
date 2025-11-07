@@ -25,6 +25,15 @@ Things you may want to cover:
 
 
 			05/11/25
+
+
+	Paperclip gem
+	sso(single-sign on) auth overview
+	handled hash_key error which result in env file issue .
+	created a table via console(raw sql queries) over already present migration which are not present in schema 
+
+
+
 	installed mysql.
 	maintained sheet daily status sheet of cleint.
 	installed all setup related platforms like for elastic search java is used .
